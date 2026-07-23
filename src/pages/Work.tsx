@@ -70,19 +70,21 @@ const previous: Role[] = [
 export default function Work() {
   return (
     <div className="page page--scroll page--projects">
-      <BlurPanel>
-        <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.35em' }}>
-          <h2 className="heading-section">work</h2>
-          <StarDecal size={44} style={{ position: 'absolute', left: '100%', top: '-0.3em', marginLeft: '0.15em' }} />
-        </div>
+      <div className="section-heading" style={{ position: 'relative', display: 'inline-block', marginBottom: '0.35em' }}>
+        <h2 className="heading-section">work</h2>
+        <StarDecal size={44} style={{ position: 'absolute', left: '100%', top: '-0.3em', marginLeft: '0.15em' }} />
+      </div>
 
+      <BlurPanel>
         <section className="work-section">
           <h3 className="work-section-heading">currently:</h3>
           {current.map((r) => (
             <RoleBlock key={r.title + r.org} role={r} />
           ))}
         </section>
+      </BlurPanel>
 
+      <BlurPanel>
         <section className="work-section">
           <h3 className="work-section-heading">previously:</h3>
           {previous.map((r) => (

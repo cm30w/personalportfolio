@@ -36,14 +36,14 @@ const projects: Project[] = [
 export default function Projects() {
   return (
     <div className="page page--scroll page--projects">
-      <BlurPanel>
-        <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.4em' }}>
-          <h2 className="heading-section">
-            projects
-          </h2>
-          <StarDecal size={44} style={{ position: 'absolute', left: '100%', top: '-0.3em', marginLeft: '0.15em' }} />
-        </div>
+      <div className="section-heading" style={{ position: 'relative', display: 'inline-block', marginBottom: '0.4em' }}>
+        <h2 className="heading-section">
+          projects
+        </h2>
+        <StarDecal size={44} style={{ position: 'absolute', left: '100%', top: '-0.3em', marginLeft: '0.15em' }} />
+      </div>
 
+      <BlurPanel>
         <div className="project-grid">
           {projects.map((p) => (
             <div className="project-card" key={p.title}>

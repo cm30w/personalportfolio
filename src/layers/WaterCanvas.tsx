@@ -93,12 +93,12 @@ void main() {
   // Applied directly to UV so the distortion is large and smooth regardless of
   // how many drops are in the simulation.
   float t = u_time;
-  float dx = sin(v_uv.x * 2.8  + v_uv.y * 1.3  + t * 0.25) * 0.055
-           + sin(v_uv.x * 5.1  - v_uv.y * 3.7  + t * 0.42) * 0.022
-           + sin(v_uv.x * 7.5  + v_uv.y * 6.0  + t * 0.65) * 0.009;
-  float dy = cos(v_uv.x * 1.9  - v_uv.y * 2.4  + t * 0.18) * 0.055
-           + cos(v_uv.x * 4.3  + v_uv.y * 2.1  - t * 0.35) * 0.022
-           + cos(v_uv.x * 6.2  - v_uv.y * 7.3  - t * 0.55) * 0.009;
+  float dx = sin(v_uv.x * 2.8  + v_uv.y * 1.3  + t * 0.25) * 0.0275
+           + sin(v_uv.x * 5.1  - v_uv.y * 3.7  + t * 0.42) * 0.011
+           + sin(v_uv.x * 7.5  + v_uv.y * 6.0  + t * 0.65) * 0.0045;
+  float dy = cos(v_uv.x * 1.9  - v_uv.y * 2.4  + t * 0.18) * 0.0275
+           + cos(v_uv.x * 4.3  + v_uv.y * 2.1  - t * 0.35) * 0.011
+           + cos(v_uv.x * 6.2  - v_uv.y * 7.3  - t * 0.55) * 0.0045;
   vec2 waterDistort = vec2(dx, dy);
 
   // Fade distortion to zero near edges — prevents clamped-UV stretch artefacts
@@ -107,7 +107,7 @@ void main() {
   float edgeFade = ex * ey;
 
   // Combine simulation ripple normals with the broad water surface movement
-  vec2 distUV = clamp(v_uv + (normal * 0.14 + waterDistort) * edgeFade, 0.0, 1.0);
+  vec2 distUV = clamp(v_uv + (normal * 0.07 + waterDistort) * edgeFade, 0.0, 1.0);
 
   vec4 bg   = texture2D(u_background, distUV);
   vec4 fish = texture2D(u_fish, distUV);
@@ -115,6 +115,12 @@ void main() {
   // Grid pattern — zoom in 30%: UV scale 1/1.3 so each tile appears 30% larger.
   // Uses distorted UVs so the water ripple warps the grid naturally.
   vec2 patUV = clamp((distUV - 0.5) / 1.3 + 0.5, 0.0, 1.0);
+  // Canvas 2D ImageData (and thus the WebGL texture upload from it) is
+  // straight/non-premultiplied alpha, not premultiplied — so pat.rgb is
+  // already the correct tile/shadow color as authored in the SVG (mostly
+  // white, tinted dark blue where the inner shadow falls). Do NOT divide by
+  // alpha here: that used to force every grout pixel to clip to pure white,
+  // flattening out the subtle inner-shadow shading from the Figma source.
   vec4 pat = texture2D(u_pattern, patUV);
 
   // Layer order: gradient → pattern → fish
@@ -213,10 +219,82 @@ function createFishTex(gl: WebGLRenderingContext): WebGLTexture {
   return tex;
 }
 
-function createPatternTex(gl: WebGLRenderingContext): WebGLTexture {
+// Longest edge cap for the rasterized pattern texture — keeps VRAM/perf sane
+// on very large or very-high-DPR screens while still looking sharp.
+const PATTERN_MAX_DIM = 2048;
+
+// Pick a raster size that matches the device's current viewport aspect ratio
+// (scaled by DPR, capped on the long edge) so `preserveAspectRatio="xMidYMid
+// slice"` crops the grid to a "cover" fit instead of stretching it into an
+// arbitrary fixed aspect.
+function computePatternRasterSize(): { w: number; h: number } {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let w = Math.max(1, Math.round(window.innerWidth * dpr));
+  let h = Math.max(1, Math.round(window.innerHeight * dpr));
+  const longEdge = Math.max(w, h);
+  if (longEdge > PATTERN_MAX_DIM) {
+    const scale = PATTERN_MAX_DIM / longEdge;
+    w = Math.max(1, Math.round(w * scale));
+    h = Math.max(1, Math.round(h * scale));
+  }
+  return { w, h };
+}
+
+// Patch the SVG's explicit px dimensions → Blob URL → Image → offscreen
+// canvas → upload. Patching explicit width/height guarantees naturalWidth/
+// Height are set (percentage-sized SVGs have no intrinsic size) and avoids
+// any taint/CORS issues.
+function rasterizePatternSVG(
+  gl: WebGLRenderingContext,
+  tex: WebGLTexture,
+  svgText: string,
+  w: number,
+  h: number,
+) {
+  const patched = svgText
+    .replace(/width="[^"]*"/, `width="${w}"`)
+    .replace(/height="[^"]*"/, `height="${h}"`);
+  const blobUrl = URL.createObjectURL(
+    new Blob([patched], { type: 'image/svg+xml' }),
+  );
+  const img = new Image();
+  img.onload = () => {
+    const offscreen = document.createElement('canvas');
+    offscreen.width  = w;
+    offscreen.height = h;
+    offscreen.getContext('2d')!.drawImage(img, 0, 0, w, h);
+    URL.revokeObjectURL(blobUrl);
+
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, offscreen);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    // NOTE: no generateMipmap() here — the raster size now tracks the
+    // viewport (device-size-aware), so it's frequently non-power-of-two.
+    // WebGL1 can't mipmap NPOT textures (GL_INVALID_OPERATION), which leaves
+    // the texture "incomplete" and sampled as opaque black — silently
+    // blacking out the whole gradient+pattern layer. Plain LINEAR filtering
+    // with CLAMP_TO_EDGE (already set at creation) works fine for NPOT and
+    // is more than sufficient for a single rasterize-on-load/resize texture.
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+  };
+  img.onerror = () => {
+    URL.revokeObjectURL(blobUrl);
+    console.error('Failed to rasterize pattern SVG');
+  };
+  img.src = blobUrl;
+}
+
+function createPatternTex(gl: WebGLRenderingContext): {
+  tex: WebGLTexture;
+  /** Re-rasterize at the current viewport size (call on resize). */
+  refresh: () => void;
+} {
   const tex = gl.createTexture()!;
   gl.bindTexture(gl.TEXTURE_2D, tex);
-  // 1×1 transparent placeholder until the SVG rasterises
+  // 1×1 transparent placeholder until the SVG loads
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
     new Uint8Array([255, 255, 255, 0]));
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -225,28 +303,30 @@ function createPatternTex(gl: WebGLRenderingContext): WebGLTexture {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.bindTexture(gl.TEXTURE_2D, null);
 
-  // SVGs with percentage dimensions have no intrinsic pixel size — draw them
-  // onto an offscreen canvas first so texImage2D gets real pixel data.
-  const img = new Image();
-  img.onload = () => {
-    const offscreen = document.createElement('canvas');
-    // 2160×1448 matches the SVG viewBox; use power-of-2 friendly size for mipmaps
-    offscreen.width  = 2048;
-    offscreen.height = 1024;
-    const ctx = offscreen.getContext('2d')!;
-    ctx.drawImage(img, 0, 0, offscreen.width, offscreen.height);
+  // Cache the raw SVG text once fetched so `refresh()` can re-rasterize at a
+  // new size on resize without re-fetching over the network.
+  let svgText: string | null = null;
 
-    gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, offscreen);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-    gl.generateMipmap(gl.TEXTURE_2D);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.bindTexture(gl.TEXTURE_2D, null);
+  const refresh = () => {
+    if (!svgText) return;
+    const { w, h } = computePatternRasterSize();
+    rasterizePatternSVG(gl, tex, svgText, w, h);
   };
-  img.src = '/project-preview-pattern.svg';
-  return tex;
+
+  // Respect Vite's configured base path (e.g. GitHub Pages project sites are
+  // served under /<repo>/) — a root-absolute path would 404 there.
+  fetch(`${import.meta.env.BASE_URL}project-preview-pattern.svg`)
+    .then(r => {
+      if (!r.ok) throw new Error(`Pattern SVG fetch failed: ${r.status}`);
+      return r.text();
+    })
+    .then(text => {
+      svgText = text;
+      refresh();
+    })
+    .catch(err => console.error(err));
+
+  return { tex, refresh };
 }
 
 // Drop stored in screen-pixel space; converted to UV when processed
@@ -304,7 +384,8 @@ export default function WaterCanvas({ fishRef }: Props) {
 
     const bgTex      = createGradientTex(gl);
     const fishTex    = createFishTex(gl);
-    const patternTex = createPatternTex(gl);
+    const pattern    = createPatternTex(gl);
+    const patternTex = pattern.tex;
 
     let animId: number;
     let frame = 0;
@@ -431,12 +512,12 @@ export default function WaterCanvas({ fishRef }: Props) {
       const now = performance.now();
       if (now - lastMouseMs < 32) return; // ~30 drops/sec max
       lastMouseMs = now;
-      dropQueueRef.current.push({ px: e.clientX, py: e.clientY, radius: 22, strength: 0.35 });
+      dropQueueRef.current.push({ px: e.clientX, py: e.clientY, radius: 22, strength: 0.175 });
     };
 
     // Click / tap: big satisfying splash
     const handleClick = (e: MouseEvent) => {
-      dropQueueRef.current.push({ px: e.clientX, py: e.clientY, radius: 55, strength: 0.9 });
+      dropQueueRef.current.push({ px: e.clientX, py: e.clientY, radius: 55, strength: 0.45 });
     };
 
     const handleTouch = (e: TouchEvent) => {
@@ -445,10 +526,14 @@ export default function WaterCanvas({ fishRef }: Props) {
           px: e.touches[i].clientX,
           py: e.touches[i].clientY,
           radius: 30,
-          strength: 0.5,
+          strength: 0.25,
         });
       }
     };
+
+    // Debounce the pattern re-rasterization — resize/orientation-change can
+    // fire rapidly, and re-rasterizing is comparatively expensive.
+    let patternResizeTimer: number | undefined;
 
     const handleResize = () => {
       canvas!.width  = window.innerWidth;
@@ -458,6 +543,9 @@ export default function WaterCanvas({ fishRef }: Props) {
       fboA = createFBO(gl!, W, H);
       fboB = createFBO(gl!, W, H);
       fboC = createFBO(gl!, W, H);
+
+      window.clearTimeout(patternResizeTimer);
+      patternResizeTimer = window.setTimeout(() => pattern.refresh(), 200);
     };
 
     window.addEventListener('mousemove',  handleMouse);
@@ -468,6 +556,7 @@ export default function WaterCanvas({ fishRef }: Props) {
 
     return () => {
       cancelAnimationFrame(animId);
+      window.clearTimeout(patternResizeTimer);
       window.removeEventListener('mousemove',  handleMouse);
       window.removeEventListener('click',      handleClick);
       window.removeEventListener('touchmove',  handleTouch);

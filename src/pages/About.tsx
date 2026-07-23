@@ -5,14 +5,14 @@ import StarDecal from '../layers/StarDecal';
 export default function About() {
   return (
     <div className="page page--scroll page--projects">
-      <BlurPanel>
-        <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.4em' }}>
-          <h2 className="heading-section">
-            about me
-          </h2>
-          <StarDecal size={44} style={{ position: 'absolute', left: '100%', top: '-0.3em', marginLeft: '0.15em' }} />
-        </div>
+      <div className="section-heading" style={{ position: 'relative', display: 'inline-block', marginBottom: '0.4em' }}>
+        <h2 className="heading-section">
+          about me
+        </h2>
+        <StarDecal size={44} style={{ position: 'absolute', left: '100%', top: '-0.3em', marginLeft: '0.15em' }} />
+      </div>
 
+      <BlurPanel>
         <div className="body-text about-text">
           <p>
             if you're a recruiter, hi, my name is claire, I like to maximize

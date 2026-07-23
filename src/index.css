@@ -40,7 +40,7 @@ body {
 
 /* Frosted blur panel — matches Figma layer blur with soft, feathered edges */
 .blur-panel {
-  --blur-amount: 15px;
+  --blur-amount: 7.5px;
   --blur-feather: 2.2em;
   position: relative;
   z-index: 5;
@@ -56,6 +56,9 @@ body {
   z-index: -1;
   pointer-events: none;
   inset: calc(var(--blur-feather) * -0.85);
+  background: rgba(60, 120, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 18px;
   backdrop-filter: blur(var(--blur-amount));
   -webkit-backdrop-filter: blur(var(--blur-amount));
   /* Feather all four edges — soft dissolve like Figma layer blur, no hard border */
@@ -139,6 +142,12 @@ body {
   max-width: min(90vw, 860px);
 }
 
+/* Aligns section heading text with the body text inside the BlurPanel below it
+   (matches .blur-panel's own horizontal padding: 2.2em of its clamp(16px,1.8vw,22px) font-size) */
+.section-heading {
+  padding-left: clamp(35.2px, 3.96vw, 48.4px);
+}
+
 /* Work page — headings sit on gradient; blur only behind bullet body text */
 .work-section {
   max-width: min(90vw, 860px);
@@ -202,7 +211,7 @@ body {
 
 /* Tight blur — body copy only, matches Figma background blur layers */
 .body-blur {
-  --blur-amount: 29.65px;
+  --blur-amount: 14.83px;
   --blur-feather: 0.55em;
   position: relative;
   z-index: 1;
