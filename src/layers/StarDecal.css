@@ -1,0 +1,9 @@
+.star-decal {
+  animation: twinkle 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 228, 160, 0.8));
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.6; transform: scale(1) rotate(-5deg); }
+  50% { opacity: 1; transform: scale(1.12) rotate(5deg); }
+}

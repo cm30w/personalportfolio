@@ -1,0 +1,22 @@
+[33mcommit 0876c1058595313391b2554a189595e2a6112c1c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: cm30w <claire.wang368@gmail.com>
+Date:   Thu Jul 23 02:35:46 2026 -0400
+
+    first commit
+
+[33mcommit fb3e94c40dae11f5c62f5d42a6ffdedd3cd19cc1[m
+Author: cm30w <claire.wang368@gmail.com>
+Date:   Thu Jul 16 18:06:48 2026 -0400
+
+    Initial commit: personal website with boid fish + WebGL water ripple
+    
+    - Vite + React + TypeScript scaffold
+    - Canvas2D boid fish simulation with curved body/tail aligned to velocity
+    - WebGL ping-pong ripple shader reacting to mouse movement
+    - CSS gradient background matching Figma design
+    - Blur boxes (backdrop-filter) behind text content
+    - Star decal with twinkle animation
+    - SPA via React Router: Home, About, Work, Projects, Contact pages
+    - GitHub Actions workflow for automatic deploy to GitHub Pages
+    
+    Co-authored-by: Cursor <cursoragent@cursor.com>
