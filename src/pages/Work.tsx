@@ -98,10 +98,8 @@ export default function Work() {
             <RoleBlock key={r.title + r.org} role={r} />
           ))}
         </section>
-      </BlurPanel>
 
-      <BlurPanel>
-        <section className="work-section">
+        <section className="work-section work-section--follow">
           <h3 className="work-section-heading">previously:</h3>
           {previous.map((r) => (
             <RoleBlock key={r.title + r.org} role={r} />

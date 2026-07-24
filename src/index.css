@@ -88,10 +88,10 @@ body {
 .blur-panel > *:nth-child(4) { animation-delay: 240ms; }
 .blur-panel > *:nth-child(5) { animation-delay: 320ms; }
 
-/* Navigation */
+/* Navigation — fluid on short/laptop viewports; clamp maxes keep large monitors */
 .nav {
   position: fixed;
-  right: 48px;
+  right: clamp(16px, 3.2vw, 48px);
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
@@ -107,7 +107,7 @@ body {
 .nav-links {
   display: flex;
   flex-direction: column;
-  gap: 44px;
+  gap: clamp(14px, 4.5vh, 44px);
   align-items: center;
 }
 
@@ -119,12 +119,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 172px;
-  min-height: 65px;
+  width: clamp(110px, 18vh, 172px);
+  min-height: clamp(36px, 6.5vh, 65px);
   color: #fff;
   text-decoration: none;
   font-family: 'Inter', sans-serif;
-  font-size: 25px;
+  font-size: clamp(15px, 2.6vh, 25px);
   font-weight: 400;
   text-align: center;
   text-shadow: 0 0 2.7px rgba(255, 255, 255, 0.55);
@@ -144,11 +144,11 @@ body {
   text-shadow: 0 0 2.7px rgba(255, 255, 255, 0.55);
 }
 
-/* Home panel — desktop placement matches previous inline offsets */
+/* Home panel — left matches .page--scroll padding-left (96px); top stays fluid */
 .home-panel {
   position: absolute;
   left: 96px;
-  top: 240px;
+  top: clamp(72px, 22vh, 240px);
 }
 
 .home-title-wrap {
@@ -232,6 +232,15 @@ body {
 /* Work page — headings sit on gradient; blur only behind bullet body text */
 .work-section {
   max-width: min(90vw, 860px);
+}
+
+/* Tight follow-up section inside the same BlurPanel (was a full panel + 2rem gap) */
+.work-section--follow {
+  margin-top: 1.5em;
+}
+
+.work-section .role-block:last-child {
+  margin-bottom: 0;
 }
 
 .work-section-heading {
@@ -398,10 +407,10 @@ body {
 .page--scroll > .blur-panel { animation: none; }
 .page--scroll > .social-bar { animation-delay: 160ms; }
 
-/* Headings */
+/* Headings — vw + vh so home type shrinks when height is tight */
 .heading-hello {
   font-family: 'Inter', sans-serif;
-  font-size: clamp(64px, 8vw, 100px);
+  font-size: clamp(40px, min(8vw, 11vh), 100px);
   font-weight: 700;
   color: #fff;
   line-height: 1;
@@ -418,15 +427,15 @@ body {
 
 .subheading {
   font-family: 'Sofia Sans Semi Condensed', sans-serif;
-  font-size: clamp(28px, 3.5vw, 40px);
+  font-size: clamp(22px, min(3.5vw, 5vh), 40px);
   font-weight: 700;
   color: #fff;
-  margin-top: 10px;
+  margin-top: clamp(4px, 1vh, 10px);
 }
 
 .body-text {
   font-family: 'Sofia Sans Semi Condensed', sans-serif;
-  font-size: clamp(16px, 1.8vw, 22px);
+  font-size: clamp(14px, min(1.8vw, 2.4vh), 22px);
   font-weight: 400;
   color: #fff;
   line-height: 1.55;
