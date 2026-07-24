@@ -11,10 +11,10 @@ interface ContactEntry {
 const entries: ContactEntry[] = [
   { label: 'work', value: 'c842wang@uwaterloo.ca', href: 'mailto:c842wang@uwaterloo.ca' },
   { label: 'social / partnerships', value: 'claire45452@gmail.com', href: 'mailto:claire45452@gmail.com' },
-  { label: 'github', value: 'github.com/', href: 'https://github.com/cm30w' },
-  { label: 'linkedin', value: 'linkedin.com/in/', href: 'https://www.linkedin.com/in/claire-wang-33067b252/' },
-  { label: 'pixiv (art)', value: 'pixiv.net/users/', href: 'https://www.pixiv.net/en/users/61091823' },
-  { label: 'instagram', value: '@realloclaire', href: 'https://www.instagram.com/realloclaire/' },
+  { label: 'github', value: 'github.com/cm30w', href: 'https://github.com/cm30w' },
+  { label: 'linkedin', value: 'linkedin.com/in/claire-wang-33067b252', href: 'https://www.linkedin.com/in/claire-wang-33067b252/' },
+  { label: 'pixiv (art)', value: 'pixiv.net/users/61091823', href: 'https://www.pixiv.net/en/users/61091823' },
+  { label: 'instagram', value: 'instagram.com/realloclaire', href: 'https://www.instagram.com/realloclaire/' },
 ];
 
 export default function Contact() {

@@ -22,7 +22,7 @@ const current: Role[] = [
   },
   {
     title: 'content creator',
-    org: '@realloclaire',
+    org: 'realloclaire',
     period: 'may 2023 – present',
     bullets: [
       'grew an audience of 15k+ followers producing tech-humor content from scratch',

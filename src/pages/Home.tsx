@@ -4,13 +4,16 @@ import StarDecal from '../layers/StarDecal';
 
 export default function Home() {
   return (
-    <div className="page">
-      <BlurPanel style={{ position: 'absolute', left: 96, top: 240 }}>
-        <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.15em' }}>
+    <div className="page page--home">
+      <BlurPanel className="home-panel">
+        <div className="home-title-wrap">
           <h1 className="heading-hello">
             hello!
           </h1>
-          <StarDecal size={90} style={{ position: 'absolute', left: '100%', top: 'calc(-0.2em - 10px)', marginLeft: '0.1em', zIndex: 6 }} />
+          <StarDecal
+            size={90}
+            style={{ position: 'absolute', left: '100%', top: 'calc(-0.2em - 10px)', marginLeft: '0.1em', zIndex: 6 }}
+          />
         </div>
 
         <p className="subheading" style={{ marginBottom: '0.4em' }}>

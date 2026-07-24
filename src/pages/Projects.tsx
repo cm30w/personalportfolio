@@ -24,7 +24,7 @@ const projects: Project[] = [
     title: 'nimbus',
     date: 'jul 2026',
     description: 'A voice-controlled, self-driving drone built with a team. A Swift iOS app captures voice commands and sends flight instructions. A Python backend handles autonomous navigation. Explores voice control paired with real-time flight logic.',
-    tags: ['Swift', 'Python', 'Robotics'],
+    tags: ['Swift', 'Python', 'Robotics', 'iOS'],
     url: 'https://github.com/Raymond1134/Nimbus',
   },
   {

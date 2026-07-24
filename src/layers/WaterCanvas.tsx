@@ -185,10 +185,10 @@ function createGradientTex(gl: WebGLRenderingContext): WebGLTexture {
   c.height = 512;
   const ctx = c.getContext('2d')!;
   const grad = ctx.createLinearGradient(0, 0, 0, 512);
-  grad.addColorStop(0,    '#fdfcfa');
-  grad.addColorStop(0.17, '#98daf9');
-  grad.addColorStop(0.48, '#78b8f8');
-  grad.addColorStop(1.0,  '#7094f6');
+  grad.addColorStop(0,       '#98daf9');
+  grad.addColorStop(0.1875,  '#78b8f8');
+  grad.addColorStop(0.42788, '#7094f6');
+  grad.addColorStop(1.0,     '#3e46a0');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 4, 512);
   const tex = gl.createTexture()!;
