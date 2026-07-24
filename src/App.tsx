@@ -20,8 +20,11 @@ const NAV_ITEMS = [
 
 function currentNavLabel(pathname: string): string {
   const match = NAV_ITEMS.find((item) =>
-    item.end ? pathname === item.to : pathname.startsWith(item.to),
+    'end' in item && item.end ? pathname === item.to : pathname.startsWith(item.to),
   );
+  // #region agent log
+  fetch('http://127.0.0.1:7691/ingest/46a1531e-b5f7-424f-853f-c4ad2f0a24ce',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'7007da'},body:JSON.stringify({sessionId:'7007da',runId:'post-fix',hypothesisId:'A',location:'App.tsx:currentNavLabel',message:'nav label resolved',data:{pathname,label:match?.shortLabel ?? 'home',matchedTo:match?.to ?? null,hasEnd:match ? 'end' in match : false},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
   return match?.shortLabel ?? 'home';
 }
 
