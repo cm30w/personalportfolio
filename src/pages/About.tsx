@@ -6,7 +6,7 @@ import StarDecal from '../layers/StarDecal';
 export default function About() {
   return (
     <ScrollPage className="page--projects">
-      <div className="section-heading" style={{ marginBottom: '0.4em' }}>
+      <div className="section-heading" style={{ marginBottom: '0.12em' }}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
           <h2 className="heading-section">
             about me
@@ -18,26 +18,33 @@ export default function About() {
       <BlurPanel>
         <div className="body-text about-text">
           <p>
-            if you're a recruiter, hi, my name is claire, I like to maximize
-            shareholder profits and scale businesses with AI-powered solutions.
-            I also do growth for startups, accumulating tens of millions of views.
+            hi, i'm claire! I'm a computer science student at the university of
+            waterloo. i like building things end-to-end: writing the code, and
+            making sure people actually use what gets built. alongside my
+            technical work, i've led growth initiatives for tech companies and organizations,
+            helping drive tens of millions of views, which has given me a solid
+            read on both the technical and audience side of a product.
           </p>
           <p>
-            if you're not a recruiter, welcome to my website. i'm claire, a second
-            year at the university of waterloo. I have a LOT of hobbies, ranging from
-            competitive debate, visual arts, hip hop, nail art, making reels, watching
-            anime, video games, etc. unfortunately, none of my hobbies are very
-            profitable, which is how i ended up here.
+            i take ownership seriously and throw myself 100% into my commitments.
+            whether that's running community initiatives, leading marketing campaigns, 
+            or managing a project from start to finish,
+            i show up, follow through, and communicate clearly with the people i
+            work with.
           </p>
           <p>
-            if i didn't have to support my family, I would probably work at a cat
-            shelter. :3
+            outside of coursework and projects, i'm involved in competitive
+            debate, visual arts, and content creation, which keep me
+            comfortable presenting ideas, working under deadlines, and adapting
+            quickly, which carry over directly into how i work on a team.
           </p>
           <p>
-            my passions in cs lie within working on projects that i would personally
-            use, but i'm not opposed to working on the typical b2b saas and solving
-            leetcode for quick dopamine hits.
-          </p>
+            if it weren't for CS, i'd probably be working at a cat shelter. :3
+            or pursuing an architecture / illustration degree. or content management.
+            but until then, i'm especially drawn to projects with a real user at
+            the other end of them, though i'm just as comfortable in a typical
+            b2b/saas environment solving practical, ambiguous problems.
+            </p>
         </div>
       </BlurPanel>
 

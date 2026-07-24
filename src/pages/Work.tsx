@@ -14,19 +14,19 @@ const current: Role[] = [
   {
     title: 'web design lead',
     org: 'uw computer science club',
-    period: 'present',
+    period: 'sept 2025 – present',
     bullets: [
-      'run team to make class profile design assets for website',
-      'improve website UX and visual identity',
+      'lead a team of 5 designers to deliver the 2026 class profile, owning design from brief to launch',
+      'established design system and workflow standards to keep the team aligned across concurrent workstreams',
     ],
   },
   {
-    title: 'reels creator',
+    title: 'content creator',
     org: '@realloclaire',
     period: 'may 2023 – present',
     bullets: [
-      'started making reels in may — 15k+ followers in tech humor niche',
-      'learned social media algorithms and growth strategies',
+      'grew an audience of 15k+ followers producing tech-humor content from scratch',
+      'developed practical expertise in platform algorithms and audience growth strategy',
     ],
   },
 ];
@@ -35,10 +35,18 @@ const previous: Role[] = [
   {
     title: 'assistant vice president',
     org: 'uw computer science club',
-    period: 'prev term',
+    period: 'jan 2026 – apr 2026',
     bullets: [
-      'managed marketing, graphics, webcom',
-      'content with bunch of views (stats later)',
+      'oversaw the events, web development, graphics, and marketing teams, driving cross-functional accountability week-over-week',
+      "grew the club's instagram by 120,000+ cumulative views, with 4 reels averaging 30k+ views each — a 7.5x lift over prior benchmarks",
+    ],
+  },
+  {
+    title: 'ugc creator',
+    org: 'quizlet',
+    period: 'apr 2026',
+    bullets: [
+      'produced user-generated content for Quizlet, generating 10M+ views within a single month',
     ],
   },
   {
@@ -46,24 +54,29 @@ const previous: Role[] = [
     org: 'nrg hacks',
     period: 'prev term',
     bullets: [
-      'founded our own hackathon',
+      "co-founded and organized a student-run hackathon supporting the school's cs program",
+      'raised over $1,000 for the program and grew the event into an annual fixture, drawing ~50 teams from across the region',
     ],
   },
   {
-    title: 'math tutor',
+    title: 'math instructor',
     org: 'mathnasium',
-    period: 'summer 2023',
+    period: 'aug 2024 – aug 2025',
     bullets: [
-      'babysat a bunch of kids',
-      'got arithmetic mogged by some geniuses',
+      'taught students topics ranging from basic arithmetic to high school calculus',
+      'adapted teaching methods to individual learning styles to drive measurable comprehension gains',
     ],
   },
   {
     title: 'competitive debater',
-    org: 'various tournaments',
-    period: 'high school',
+    org: 'national & international tournaments',
+    period: '2023 – 2025',
     bullets: [
-      'hella awards stack',
+      'semifinalist, harvard world schools debating championship (top 4 of 78 teams, 2025)',
+      'finalist, hart house open (top 4 of 180 teams, 2024)',
+      'semifinalist, mcgill hst open (2023)',
+      'semifinalist & 4th open speaker, cusid hst (2023)',
+      '4th open speaker, western hst (of 396 speakers, 2023)',
     ],
   },
 ];
@@ -71,7 +84,7 @@ const previous: Role[] = [
 export default function Work() {
   return (
     <ScrollPage className="page--projects">
-      <div className="section-heading" style={{ marginBottom: '0.35em' }}>
+      <div className="section-heading" style={{ marginBottom: '0.105em' }}>
         <div style={{ position: 'relative', display: 'inline-block' }}>
           <h2 className="heading-section">work</h2>
           <StarDecal size={90} style={{ position: 'absolute', left: '100%', top: 'calc(-0.2em - 10px)', marginLeft: '0.1em', zIndex: 6 }} />

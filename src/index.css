@@ -153,7 +153,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: clamp(153px, 17vh, 196px) clamp(120px, 14vw, 180px) 2.25rem 96px;
+  padding: clamp(138px, calc(17vh - 15px), 181px) clamp(120px, 14vw, 180px) 2.25rem 96px;
   pointer-events: none;
 }
 
@@ -188,9 +188,18 @@ body {
 }
 
 /* Aligns section heading text with the body text inside the BlurPanel below it
-   (matches .blur-panel's own horizontal padding: 2.2em of its clamp(16px,1.8vw,22px) font-size) */
+   (matches .blur-panel's own horizontal padding: 2.2em of its clamp(16px,1.8vw,22px) font-size).
+   z-index above .blur-panel (5) so the title + star stay on top of the feathered blur overlap. */
 .section-heading {
+  position: relative;
+  z-index: 6;
   padding-left: clamp(35.2px, 3.96vw, 48.4px);
+}
+
+/* Cancel page flex-gap + most of BlurPanel top padding so the title sits ~1.2em
+   above the body (matches About). em is BlurPanel's own font-size. */
+.page--scroll > .section-heading + .blur-panel {
+  margin-top: calc(-2rem - 1em);
 }
 
 /* Work page — headings sit on gradient; blur only behind bullet body text */
@@ -299,7 +308,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 14px;
+  gap: 16px;
   align-items: center;
 }
 
@@ -307,18 +316,17 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 52px;
+  height: 52px;
   background: rgba(255, 255, 255, 0.92);
-  border-radius: 12px;
-  padding: 10px 18px;
+  border-radius: 14px;
+  padding: 0;
   color: #5570c0;
   text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  gap: 7px;
   border: none;
   cursor: pointer;
   transition: background 0.18s, transform 0.18s;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .social-btn:hover {
@@ -416,56 +424,101 @@ body {
 }
 
 .project-card {
+  position: relative;
+  height: 274px;
   border-radius: 28px;
   overflow: hidden;
+  cursor: pointer;
 }
 
-/* Preview area — white tile grid from Figma Union, fish/gradient visible behind */
+/* Preview fills the full card; white panel overlays the bottom */
 .project-card-preview {
-  width: 100%;
-  height: 160px;
+  position: absolute;
+  inset: 0;
   background-color: #a8ccee;
   background-image: url('/project-preview-pattern.svg');
   background-size: cover;
   background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
-  font-family: 'Inter', sans-serif;
 }
 
-/* Card body — white panel matching Figma project box */
+/* Card body — full-height panel that slides up via transform */
 .project-card-body {
+  --ease-panel: cubic-bezier(0.22, 1, 0.36, 1);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  height: 100%;
   padding: 12px 23px 18px;
   background: #fff;
-  border-bottom-left-radius: 28px;
-  border-bottom-right-radius: 28px;
+  border-radius: 0 0 28px 28px;
+  overflow: hidden;
+  box-sizing: border-box;
+  transform: translateY(calc(100% - var(--collapsed-h, 105px)));
+  transition:
+    transform 0.45s var(--ease-panel),
+    border-radius 0.45s var(--ease-panel);
+  will-change: transform;
+}
+
+.project-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75em;
+  margin-bottom: 4px;
 }
 
 .project-card-title {
-  display: block;
   font-family: 'Sofia Sans Semi Condensed', sans-serif;
   font-size: clamp(22px, 2.2vw, 30px);
   font-weight: 700;
   color: #7094f6;
-  margin-bottom: 4px;
+  margin: 0;
   line-height: 1.2;
   text-decoration: none;
+  min-width: 0;
+}
+
+.project-card-date {
+  flex-shrink: 0;
+  font-family: 'Sofia Sans Semi Condensed', sans-serif;
+  font-size: clamp(13px, 1.2vw, 16px);
+  font-weight: 400;
+  color: #7094f6;
+  line-height: 1.2;
+  text-align: right;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.28s ease;
 }
 
 a.project-card-title:hover {
   text-decoration: underline;
 }
 
+/* Tags define the slot height; description overlays the same area */
+.project-card-details {
+  position: relative;
+}
+
 .project-card-desc {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6px; /* align with .tag-row margin-top */
   font-family: 'Sofia Sans Semi Condensed', sans-serif;
   font-size: clamp(16px, 1.5vw, 20px);
   color: #7094f6;
-  margin-top: 8px;
-  margin-bottom: 0;
+  margin: 0;
   line-height: 1.35;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .tag-row {
@@ -473,6 +526,8 @@ a.project-card-title:hover {
   gap: 9px;
   flex-wrap: wrap;
   margin-top: 6px;
+  opacity: 1;
+  transition: opacity 0.28s ease;
 }
 
 .tag {
@@ -490,6 +545,64 @@ a.project-card-title:hover {
   color: #6396f4;
   line-height: 1;
   white-space: nowrap;
+}
+
+/* Expanded: panel slides to top; description fades in over the tag slot */
+.project-card.is-expanded .project-card-body {
+  transform: translateY(0);
+  border-radius: 28px;
+}
+
+.project-card.is-expanded .project-card-date,
+.project-card.is-expanded .tag-row {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+.project-card.is-expanded .project-card-desc {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition:
+    opacity 0.4s ease 0.12s,
+    transform 0.4s var(--ease-panel, cubic-bezier(0.22, 1, 0.36, 1)) 0.12s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover .project-card-body {
+    transform: translateY(0);
+    border-radius: 28px;
+  }
+
+  .project-card:hover .project-card-date,
+  .project-card:hover .tag-row {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+  }
+
+  .project-card:hover .project-card-desc {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+      opacity 0.4s ease 0.12s,
+      transform 0.4s var(--ease-panel, cubic-bezier(0.22, 1, 0.36, 1)) 0.12s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card-body,
+  .project-card-date,
+  .project-card-desc,
+  .tag-row {
+    transition: none !important;
+  }
+
+  .project-card-desc {
+    transform: none;
+  }
 }
 
 /* Scrollable content area */
@@ -536,8 +649,12 @@ a.project-card-title:hover {
   }
 
   .page--scroll {
-    padding: 150px 24px 2rem;
+    padding: 135px 24px 2rem;
     gap: 1.5rem;
+  }
+
+  .page--scroll > .section-heading + .blur-panel {
+    margin-top: calc(-1.5rem - 1em);
   }
 
   .project-grid {
