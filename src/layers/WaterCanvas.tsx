@@ -317,6 +317,20 @@ function createPatternTex(gl: WebGLRenderingContext): {
   // served under /<repo>/) — a root-absolute path would 404 there.
   fetch(`${import.meta.env.BASE_URL}project-preview-pattern.svg`)
     .then(r => {
+      // #region agent log
+      fetch('http://127.0.0.1:7691/ingest/46a1531e-b5f7-424f-853f-c4ad2f0a24ce', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'cde014' },
+        body: JSON.stringify({
+          sessionId: 'cde014',
+          location: 'WaterCanvas.tsx:pattern-fetch',
+          message: 'pattern svg fetch response',
+          data: { url: `${import.meta.env.BASE_URL}project-preview-pattern.svg`, ok: r.ok, status: r.status },
+          timestamp: Date.now(),
+          hypothesisId: 'H1',
+        }),
+      }).catch(() => {});
+      // #endregion
       if (!r.ok) throw new Error(`Pattern SVG fetch failed: ${r.status}`);
       return r.text();
     })
@@ -357,6 +371,20 @@ export default function WaterCanvas({ fishRef }: Props) {
     if (!canvas) return;
 
     const gl = canvas.getContext('webgl', { alpha: false, premultipliedAlpha: false });
+    // #region agent log
+    fetch('http://127.0.0.1:7691/ingest/46a1531e-b5f7-424f-853f-c4ad2f0a24ce', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'cde014' },
+      body: JSON.stringify({
+        sessionId: 'cde014',
+        location: 'WaterCanvas.tsx:webgl',
+        message: gl ? 'webgl context ok' : 'webgl context FAILED',
+        data: { href: window.location.href, baseUrl: import.meta.env.BASE_URL },
+        timestamp: Date.now(),
+        hypothesisId: 'H5',
+      }),
+    }).catch(() => {});
+    // #endregion
     if (!gl) return;
 
     const rippleProg = createProgram(gl, VERT_SRC, RIPPLE_FRAG_SRC);

@@ -15,6 +15,21 @@ export default function ScrollPage({ children, className = '' }: ScrollPageProps
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7691/ingest/46a1531e-b5f7-424f-853f-c4ad2f0a24ce', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'cde014' },
+      body: JSON.stringify({
+        sessionId: 'cde014',
+        location: 'ScrollPage.tsx:mount',
+        message: 'scroll page mounted',
+        data: { hash: window.location.hash, className },
+        timestamp: Date.now(),
+        hypothesisId: 'H4',
+      }),
+    }).catch(() => {});
+    // #endregion
+
     const contentKids = () => {
       const page = pageRef.current;
       if (!page) return [] as HTMLElement[];

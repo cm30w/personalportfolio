@@ -61,8 +61,10 @@ body {
   inset: calc(var(--blur-feather) * -0.85);
   /* Pure gaussian blur of the background — no tint / multiply overlay */
   background: transparent;
+  /* Standard property only — Vite/lightningcss adds -webkit- prefix in production.
+     Do NOT add -webkit-backdrop-filter manually; that causes the minifier to drop
+     backdrop-filter and breaks blur on GitHub Pages. */
   backdrop-filter: blur(var(--blur-amount));
-  -webkit-backdrop-filter: blur(var(--blur-amount));
   mask-image:
     linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%),
     linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
@@ -271,7 +273,6 @@ body {
   pointer-events: none;
   inset: calc(var(--blur-feather) * -0.65);
   backdrop-filter: blur(var(--blur-amount));
-  -webkit-backdrop-filter: blur(var(--blur-amount));
   mask-image:
     linear-gradient(to right, transparent 0%, #000 18%, #000 82%, transparent 100%),
     linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
