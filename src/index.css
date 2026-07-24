@@ -8,15 +8,17 @@
 
 html, body {
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+  /* Document is the scroll root — overflow on #root breaks backdrop-filter
+     for in-flow (scroll-page) BlurPanels. Home is position:fixed so unaffected. */
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 #root {
   width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  min-height: 100%;
+  overflow: visible;
 }
 
 body {
@@ -53,15 +55,14 @@ body {
 .blur-panel::before {
   content: '';
   position: absolute;
-  z-index: -1;
+  /* >= 0 so blur stays in the panel stacking context (not behind it) */
+  z-index: 0;
   pointer-events: none;
   inset: calc(var(--blur-feather) * -0.85);
-  background: rgba(60, 120, 255, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.38);
-  border-radius: 18px;
+  /* Pure gaussian blur of the background — no tint / multiply overlay */
+  background: transparent;
   backdrop-filter: blur(var(--blur-amount));
   -webkit-backdrop-filter: blur(var(--blur-amount));
-  /* Feather all four edges — soft dissolve like Figma layer blur, no hard border */
   mask-image:
     linear-gradient(to right, transparent 0%, #000 14%, #000 86%, transparent 100%),
     linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
@@ -71,6 +72,19 @@ body {
     linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
   -webkit-mask-composite: source-in;
 }
+
+/* Text sits above the blur layer + stagger entrance */
+.blur-panel > * {
+  position: relative;
+  z-index: 1;
+  animation: fadeSlideDown 0.4s ease both;
+}
+
+.blur-panel > *:nth-child(1) { animation-delay:   0ms; }
+.blur-panel > *:nth-child(2) { animation-delay:  80ms; }
+.blur-panel > *:nth-child(3) { animation-delay: 160ms; }
+.blur-panel > *:nth-child(4) { animation-delay: 240ms; }
+.blur-panel > *:nth-child(5) { animation-delay: 320ms; }
 
 /* Navigation */
 .nav {
@@ -127,19 +141,48 @@ body {
 }
 
 .page--scroll {
-  position: relative;
-  inset: auto;
-  min-height: 100vh;
+  /* Same containing block as Home (.page) so backdrop-filter can sample the canvas.
+     Children are direct (plus a zero-height spacer) — no wrapping box.
+     Scrolling shifts via spacer marginTop; overflow:auto would kill the blur. */
+  position: fixed;
+  inset: 0;
+  overflow: visible;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: clamp(153px, 17vh, 196px) clamp(120px, 14vw, 180px) 0 96px;
+  padding: clamp(153px, 17vh, 196px) clamp(120px, 14vw, 180px) 2.25rem 96px;
+  pointer-events: none;
+}
+
+.page--scroll > * {
   pointer-events: auto;
+}
+
+.page--scroll__spacer {
+  display: block;
+  flex: 0 0 auto;
+  width: 100%;
+  height: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .page--scroll .blur-panel {
   width: 100%;
   max-width: min(90vw, 860px);
+}
+
+/* Contact (and any shrink panel): hug text width instead of stretching full column */
+.page--scroll .blur-panel.blur-panel--fit {
+  width: fit-content;
+}
+
+.blur-panel--fit .work-section {
+  width: fit-content;
+  max-width: 100%;
 }
 
 /* Aligns section heading text with the body text inside the BlurPanel below it
@@ -293,34 +336,31 @@ body {
   flex-wrap: wrap;
 }
 
+/* On scroll pages, don't pin the footer with auto margin — that grows unboundedly
+   as the scroll spacer pulls content up and breaks max-scroll clamping. */
+.page--scroll > .social-bar--footer {
+  margin-top: 0;
+}
+
 /* Page transition — fade in + slide from above, staggered top to bottom */
+/* Page transition — fade only (no transform: any transform, even identity,
+   creates a stacking context that kills backdrop-filter on BlurPanels) */
 @keyframes fadeSlideDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* Scroll pages (Work, Projects): stagger top-level sections */
-.page--scroll > * {
+/* Scroll pages: stagger non-blur sections (never animate BlurPanel itself —
+   opacity/compositor animation on the panel kills backdrop-filter) */
+.page--scroll > .section-heading,
+.page--scroll > .social-bar {
   animation: fadeSlideDown 0.45s ease both;
 }
 
-.page--scroll > *:nth-child(1) { animation-delay:   0ms; }
-.page--scroll > *:nth-child(2) { animation-delay:  80ms; }
-.page--scroll > *:nth-child(3) { animation-delay: 160ms; }
-.page--scroll > *:nth-child(4) { animation-delay: 240ms; }
-.page--scroll > *:nth-child(5) { animation-delay: 320ms; }
-.page--scroll > *:nth-child(6) { animation-delay: 400ms; }
-
-/* Fixed pages (Home, About, Contact): stagger individual elements within each BlurPanel */
-.blur-panel > * {
-  animation: fadeSlideDown 0.4s ease both;
-}
-
-.blur-panel > *:nth-child(1) { animation-delay:   0ms; }
-.blur-panel > *:nth-child(2) { animation-delay:  80ms; }
-.blur-panel > *:nth-child(3) { animation-delay: 160ms; }
-.blur-panel > *:nth-child(4) { animation-delay: 240ms; }
-.blur-panel > *:nth-child(5) { animation-delay: 320ms; }
+.page--scroll > .section-heading { animation-delay: 0ms; }
+.page--scroll > .blur-panel { animation: none; }
+.page--scroll > .social-bar { animation-delay: 160ms; }
 
 /* Headings */
 .heading-hello {
@@ -370,7 +410,7 @@ body {
 }
 
 /* Keep project cards clear of the fixed right nav (48px inset + 172px link width) */
-.page--projects {
+.page--projects.page--scroll {
   padding-right: clamp(240px, 22vw, 300px);
 }
 
@@ -495,7 +535,7 @@ a.project-card-title:hover {
   }
 
   .page--scroll {
-    padding: 150px 24px 0;
+    padding: 150px 24px 2rem;
     gap: 1.5rem;
   }
 
@@ -503,7 +543,7 @@ a.project-card-title:hover {
     grid-template-columns: 1fr;
   }
 
-  .page--projects {
+  .page--projects.page--scroll {
     padding-right: 24px;
   }
 }

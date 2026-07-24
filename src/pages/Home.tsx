@@ -10,7 +10,7 @@ export default function Home() {
           <h1 className="heading-hello">
             hello!
           </h1>
-          <StarDecal size={90} style={{ position: 'absolute', left: '100%', top: '-0.2em', marginLeft: '0.1em', zIndex: 6 }} />
+          <StarDecal size={90} style={{ position: 'absolute', left: '100%', top: 'calc(-0.2em - 10px)', marginLeft: '0.1em', zIndex: 6 }} />
         </div>
 
         <p className="subheading" style={{ marginBottom: '0.4em' }}>

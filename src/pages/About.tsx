@@ -1,15 +1,18 @@
 import BlurPanel from '../components/BlurPanel';
+import ScrollPage from '../components/ScrollPage';
 import SocialBar from '../components/SocialBar';
 import StarDecal from '../layers/StarDecal';
 
 export default function About() {
   return (
-    <div className="page page--scroll page--projects">
-      <div className="section-heading" style={{ position: 'relative', display: 'inline-block', marginBottom: '0.4em' }}>
-        <h2 className="heading-section">
-          about me
-        </h2>
-        <StarDecal size={44} style={{ position: 'absolute', left: '100%', top: '-0.3em', marginLeft: '0.15em' }} />
+    <ScrollPage className="page--projects">
+      <div className="section-heading" style={{ marginBottom: '0.4em' }}>
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <h2 className="heading-section">
+            about me
+          </h2>
+          <StarDecal size={90} style={{ position: 'absolute', left: '100%', top: 'calc(-0.2em - 10px)', marginLeft: '0.1em', zIndex: 6 }} />
+        </div>
       </div>
 
       <BlurPanel>
@@ -39,6 +42,6 @@ export default function About() {
       </BlurPanel>
 
       <SocialBar className="social-bar--footer" />
-    </div>
+    </ScrollPage>
   );
 }

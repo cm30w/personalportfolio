@@ -1,4 +1,5 @@
 import BlurPanel from '../components/BlurPanel';
+import ScrollPage from '../components/ScrollPage';
 import StarDecal from '../layers/StarDecal';
 
 interface ContactEntry {
@@ -18,20 +19,22 @@ const entries: ContactEntry[] = [
 
 export default function Contact() {
   return (
-    <div className="page page--scroll page--projects">
-      <div className="section-heading" style={{ position: 'relative', display: 'inline-block', marginBottom: '0.35em' }}>
-        <h2 className="heading-section">contact me</h2>
-        <StarDecal size={44} style={{ position: 'absolute', left: '100%', top: '-0.3em', marginLeft: '0.15em' }} />
+    <ScrollPage className="page--projects">
+      <div className="section-heading" style={{ marginBottom: '0.35em' }}>
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+          <h2 className="heading-section">contact me</h2>
+          <StarDecal size={90} style={{ position: 'absolute', left: '100%', top: 'calc(-0.2em - 10px)', marginLeft: '0.1em', zIndex: 6 }} />
+        </div>
       </div>
 
-      <BlurPanel>
+      <BlurPanel className="blur-panel--fit">
         <section className="work-section">
           {entries.map((e) => (
             <ContactBlock key={e.label} entry={e} />
           ))}
         </section>
       </BlurPanel>
-    </div>
+    </ScrollPage>
   );
 }
 
