@@ -18,33 +18,31 @@ export default function About() {
       <BlurPanel>
         <div className="body-text about-text">
           <p>
-            hi, i'm claire! I'm a computer science student at the university of
-            waterloo. i like building things end-to-end: writing the code, and
-            making sure people actually use what gets built. alongside my
-            technical work, i've led growth initiatives for tech companies and organizations,
-            helping drive tens of millions of views, which has given me a solid
+            Hi, I'm Claire! I'm a computer science student at the University of
+            Waterloo. I like building things end-to-end: writing the code, and
+            making sure people actually use what gets built. Alongside my
+            technical work, I've led growth initiatives for tech companies and organizations,
+            helping drive millions of views, which has given me a solid
             read on both the technical and audience side of a product.
           </p>
           <p>
-            i take ownership seriously and throw myself 100% into my commitments.
-            whether that's running community initiatives, leading marketing campaigns, 
+            I take ownership seriously and throw myself 100% into my commitments.
+            Whether that's running community initiatives, leading marketing campaigns,
             or managing a project from start to finish,
-            i show up, follow through, and communicate clearly with the people i
+            I show up, follow through, and communicate clearly with the people I
             work with.
           </p>
           <p>
-            outside of coursework and projects, i'm involved in competitive
+            Outside of coursework and projects, I'm involved in competitive
             debate, visual arts, and content creation, which keep me
             comfortable presenting ideas, working under deadlines, and adapting
-            quickly, which carry over directly into how i work on a team.
+            quickly, which carry over directly into how I work on a team.
           </p>
           <p>
-            if it weren't for CS, i'd probably be working at a cat shelter. :3
-            or pursuing an architecture / illustration degree. or content management.
-            but until then, i'm especially drawn to projects with a real user at
-            the other end of them, though i'm just as comfortable in a typical
-            b2b/saas environment solving practical, ambiguous problems.
-            </p>
+            I'm especially drawn to projects with a real user at
+            the other end of them, though I'm just as comfortable in a typical
+            B2B/SaaS environment solving practical, ambiguous problems.
+          </p>
         </div>
       </BlurPanel>
 

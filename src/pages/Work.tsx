@@ -14,7 +14,7 @@ const current: Role[] = [
   {
     title: 'web design lead',
     org: 'uw computer science club',
-    period: 'sept 2025 – present',
+    period: 'april 2026 – present',
     bullets: [
       'lead a team of 5 designers to deliver the 2026 class profile, owning design from brief to launch',
       'established design system and workflow standards to keep the team aligned across concurrent workstreams',
@@ -38,24 +38,15 @@ const previous: Role[] = [
     period: 'jan 2026 – apr 2026',
     bullets: [
       'oversaw the events, web development, graphics, and marketing teams, driving cross-functional accountability week-over-week',
-      "grew the club's instagram by 120,000+ cumulative views, with 4 reels averaging 30k+ views each — a 7.5x lift over prior benchmarks",
+      "grew the club's instagram by 120,000+ cumulative views, a 7.5x increase in engagement over prior benchmarks",
     ],
   },
   {
     title: 'ugc creator',
     org: 'quizlet',
-    period: 'apr 2026',
+    period: 'june 2026',
     bullets: [
       'produced user-generated content for Quizlet, generating 10M+ views within a single month',
-    ],
-  },
-  {
-    title: 'organizer + founding team',
-    org: 'nrg hacks',
-    period: 'prev term',
-    bullets: [
-      "co-founded and organized a student-run hackathon supporting the school's cs program",
-      'raised over $1,000 for the program and grew the event into an annual fixture, drawing ~50 teams from across the region',
     ],
   },
   {
@@ -68,9 +59,18 @@ const previous: Role[] = [
     ],
   },
   {
+    title: 'organizer + founding team',
+    org: 'nrg hacks',
+    period: 'february 2024 – march 2025',
+    bullets: [
+      "co-founded and organized a student-run hackathon supporting the school's cs program",
+      'raised over $1,000 for the program and grew the event into an annual fixture, drawing ~50 teams from across the region',
+    ],
+  },
+  {
     title: 'competitive debater',
     org: 'national & international tournaments',
-    period: '2023 – 2025',
+    period: '2021 – 2025',
     bullets: [
       'semifinalist, harvard world schools debating championship (top 4 of 78 teams, 2025)',
       'finalist, hart house open (top 4 of 180 teams, 2024)',

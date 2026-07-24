@@ -63,21 +63,30 @@ function ProjectCard({ project }: { project: Project }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
+  const teaserRef = useRef<HTMLParagraphElement>(null);
 
   useLayoutEffect(() => {
     const card = cardRef.current;
     const body = bodyRef.current;
     const header = headerRef.current;
     const tags = tagsRef.current;
-    if (!card || !body || !header || !tags) return;
+    const teaser = teaserRef.current;
+    if (!card || !body || !header || !tags || !teaser) return;
 
     const syncCollapsedHeight = () => {
       const style = getComputedStyle(body);
       const padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
       const headerGap = parseFloat(getComputedStyle(header).marginBottom) || 0;
       const tagsMargin = parseFloat(getComputedStyle(tags).marginTop) || 0;
+      const teaserMargin = parseFloat(getComputedStyle(teaser).marginTop) || 0;
       const collapsed =
-        padY + header.offsetHeight + headerGap + tagsMargin + tags.scrollHeight;
+        padY +
+        header.offsetHeight +
+        headerGap +
+        tagsMargin +
+        tags.scrollHeight +
+        teaserMargin +
+        teaser.offsetHeight;
       card.style.setProperty('--collapsed-h', `${Math.ceil(collapsed)}px`);
     };
 
@@ -85,6 +94,7 @@ function ProjectCard({ project }: { project: Project }) {
     const ro = new ResizeObserver(syncCollapsedHeight);
     ro.observe(card);
     ro.observe(tags);
+    ro.observe(teaser);
     return () => ro.disconnect();
   }, [project]);
 
@@ -140,6 +150,7 @@ function ProjectCard({ project }: { project: Project }) {
               <span className="tag" key={t}>{t}</span>
             ))}
           </div>
+          <p className="project-card-teaser" ref={teaserRef}>{project.description}</p>
           <p className="project-card-desc">{project.description}</p>
         </div>
       </div>

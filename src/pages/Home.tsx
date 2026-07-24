@@ -23,6 +23,7 @@ export default function Home() {
         <div className="body-text">
           <ul>
             <li>cs @ university of waterloo</li>
+            <li>looking for <b>winter 2027 internships</b></li>
             <li>reels creator</li>
             <li>art enthusiast</li>
           </ul>

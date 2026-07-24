@@ -539,6 +539,20 @@ a.project-card-title:hover {
   position: relative;
 }
 
+.project-card-teaser {
+  display: block;
+  margin: 6px 0 0;
+  font-family: 'Sofia Sans Semi Condensed', sans-serif;
+  font-size: clamp(16px, 1.5vw, 20px);
+  color: #7094f6;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 0.28s ease;
+}
+
 .project-card-desc {
   position: absolute;
   left: 0;
@@ -590,7 +604,8 @@ a.project-card-title:hover {
 }
 
 .project-card.is-expanded .project-card-date,
-.project-card.is-expanded .tag-row {
+.project-card.is-expanded .tag-row,
+.project-card.is-expanded .project-card-teaser {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.22s ease;
@@ -612,7 +627,8 @@ a.project-card-title:hover {
   }
 
   .project-card:hover .project-card-date,
-  .project-card:hover .tag-row {
+  .project-card:hover .tag-row,
+  .project-card:hover .project-card-teaser {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.22s ease;
@@ -632,6 +648,7 @@ a.project-card-title:hover {
   .project-card-body,
   .project-card-date,
   .project-card-desc,
+  .project-card-teaser,
   .tag-row {
     transition: none !important;
   }
