@@ -33,15 +33,14 @@ export default function About() {
             work with.
           </p>
           <p>
-            Outside of coursework and projects, I'm involved in competitive
-            debate, visual arts, and content creation, which keep me
-            comfortable presenting ideas, working under deadlines, and adapting
-            quickly, which carry over directly into how I work on a team.
+            Outside of coursework and projects, I debate competitively and take
+            on marketing and community initiatives, which have strengthened my
+            communication, adaptability, and ability to perform under pressure,
+            skills that carry over directly into how I work on a team.
           </p>
           <p>
-            I'm especially drawn to projects with a real user at
-            the other end of them, though I'm just as comfortable in a typical
-            B2B/SaaS environment solving practical, ambiguous problems.
+            When I'm not coding, you can catch designing fun projects,
+            playing video games, or making something creative. (hobbies page coming soon)
           </p>
         </div>
       </BlurPanel>

@@ -9,7 +9,12 @@ interface Project {
   date: string;
   description: string;
   tags: string[];
+  preview: string;
   url?: string;
+}
+
+function previewUrl(filename: string) {
+  return `${import.meta.env.BASE_URL}project-previews/${encodeURIComponent(filename)}`;
 }
 
 const projects: Project[] = [
@@ -18,6 +23,7 @@ const projects: Project[] = [
     date: 'jul 2026',
     description: 'This site itself. A canvas boid simulation drives a fish school across the background. A WebGL layer renders responsive water ripples. Built with React and TypeScript on Vite, animations coded from scratch.',
     tags: ['React', 'TypeScript', 'WebGL', 'Canvas2D'],
+    preview: previewUrl('personal website.png'),
     url: 'https://github.com/cm30w/personalportfolio',
   },
   {
@@ -25,6 +31,7 @@ const projects: Project[] = [
     date: 'jul 2026',
     description: 'A voice-controlled, self-driving drone built with a team. A Swift iOS app captures voice commands and sends flight instructions. A Python backend handles autonomous navigation. Explores voice control paired with real-time flight logic.',
     tags: ['Swift', 'Python', 'Robotics', 'iOS'],
+    preview: previewUrl('nimbus.png'),
     url: 'https://github.com/Raymond1134/Nimbus',
   },
   {
@@ -32,6 +39,7 @@ const projects: Project[] = [
     date: 'jul 2026',
     description: 'A browser dance practice app comparing your webcam movement to a reference video. Uses MediaPipe pose tracking client-side, scoring 8 joint angles each second into a 0-10 accuracy score. Supports custom MP4 uploads and sync adjustment.',
     tags: ['React', 'TypeScript', 'Computer Vision', 'Tailwind CSS'],
+    preview: previewUrl('dance tracker.png'),
     url: 'https://github.com/cm30w/dancetracker',
   },
   {
@@ -39,6 +47,7 @@ const projects: Project[] = [
     date: 'jun 2026',
     description: 'A cross-platform desktop app with a task list, pomodoro timer, and integrated music player with optional Spotify Connect. Built with Electron, React, and TypeScript. Fully customizable theme. Ships as a native Windows installer.',
     tags: ['Electron', 'React', 'TypeScript', 'Desktop'],
+    preview: previewUrl('work tracker.png'),
     url: 'https://github.com/cm30w/worktracker',
   },
   {
@@ -46,6 +55,7 @@ const projects: Project[] = [
     date: 'jan 2026',
     description: 'A browser boid flocking simulation. Each boid follows three local rules - separation, alignment, cohesion - producing emergent group movement. Built with vanilla JavaScript and HTML5 canvas, no external physics libraries.',
     tags: ['JavaScript', 'Canvas2D', 'Algorithms'],
+    preview: previewUrl('boid.png'),
     url: 'https://github.com/cm30w/boid',
   },
   {
@@ -53,6 +63,7 @@ const projects: Project[] = [
     date: 'mar 2025',
     description: 'A real-time audio effects app applying distortion, chorus, and delay to live mic input. Python (PyAudio, FastAPI) processes audio with low latency, controlled from a React frontend. Built as a team project.',
     tags: ['Python', 'React', 'FastAPI', 'Audio Processing'],
+    preview: previewUrl('multifx.png'),
     url: 'https://github.com/sborishchev/multi-fx',
   },
 ];
@@ -127,7 +138,10 @@ function ProjectCard({ project }: { project: Project }) {
       className={`project-card${isExpanded ? ' is-expanded' : ''}`}
       onClick={onCardClick}
     >
-      <div className="project-card-preview" />
+      <div
+        className="project-card-preview"
+        style={{ backgroundImage: `url(${project.preview})` }}
+      />
       <div className="project-card-body" ref={bodyRef}>
         <div className="project-card-header" ref={headerRef}>
           {project.url ? (

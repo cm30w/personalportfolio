@@ -285,6 +285,28 @@ body {
   margin-top: 0.85em;
 }
 
+.about-hobbies-link {
+  color: #98daf9;
+  text-decoration: underline;
+  text-decoration-color: rgba(152, 218, 249, 0.65);
+  text-underline-offset: 2px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.about-hobbies-link:visited {
+  color: #98daf9;
+}
+
+.about-hobbies-link:hover,
+.about-hobbies-link:active {
+  color: #ffe3ab;
+  text-decoration-color: rgba(255, 227, 171, 0.75);
+}
+
+.hobbies-text p + p {
+  margin-top: 0.85em;
+}
+
 .contact-link {
   font-size: 0.85em;
   color: #fff;
