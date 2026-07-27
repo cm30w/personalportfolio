@@ -31,11 +31,12 @@ export default function Home() {
             <li>reels creator</li>
             <li>art enthusiast</li>
           </ul>
+          <p className="home-fish-hint">try to catch the fish!</p>
         </div>
 
         <SocialBar className="social-bar--footer" />
 
-        <p className="home-fish-hint">try to catch the fish!</p>
+        
       </BlurPanel>
     </div>
   );
