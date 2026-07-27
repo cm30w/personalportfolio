@@ -16,8 +16,12 @@ export default function Home() {
           />
         </div>
 
-        <p className="subheading" style={{ marginBottom: '0.4em' }}>
+        <p className="subheading" style={{ marginBottom: '0.25em' }}>
           i'm claire :)
+        </p>
+
+        <p className="home-tagline">
+          I build creative, interactive software experiences.
         </p>
 
         <div className="body-text">
@@ -30,6 +34,8 @@ export default function Home() {
         </div>
 
         <SocialBar className="social-bar--footer" />
+
+        <p className="home-fish-hint">try to catch the fish!</p>
       </BlurPanel>
     </div>
   );

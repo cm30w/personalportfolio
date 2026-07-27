@@ -19,28 +19,21 @@ export default function About() {
         <div className="body-text about-text">
         <p>
           Hi, I'm Claire, a computer science student at the University of
-          Waterloo. I like building things end-to-end: writing the code, and
-          making sure people actually use what gets built.
+          Waterloo. I like building things end-to-end; designing an API,
+          wiring up a React frontend, and getting the small UX details right
+          so people can actually click through and use what gets built.
         </p>
         <p>
-          I particularly enjoy taking a project from a rough idea to something
-          people can actually click through and use, whether that means
-          designing an API, wiring up a React frontend, or getting the small
-          UX details right. I'm comfortable across the stack, but I especially
-          like the parts where an ambiguous problem has to turn into a clear
-          technical plan: what to build first, how the pieces should talk to
-          each other, and what "done" actually looks like.
+          I'm comfortable across the stack, but I especially like turning
+          ambiguous problems into a clear technical plan: what to build first,
+          how the pieces should talk to each other, and what "done" actually
+          looks like.
         </p>
         <p>
-          I enjoy tackling ambiguous problems and turning them into practical,
-          polished software that people genuinely find useful, and I'm always
-          looking for projects that let me do exactly that.
-        </p>
-        <p>
-          I take ownership seriously. Whether that's leading a design team,
-          co-founding a hackathon, or managing a project from start to finish,
-          I show up, follow through, and communicate clearly with the people I
-          work with.
+          I take ownership seriously. Whether that's leading frontend design
+          for the Waterloo Computer Science Club, co-founding a hackathon, or
+          managing a project from start to finish, I show up, follow through,
+          and communicate clearly with the people I work with.
         </p>
         <p>
           Outside of coursework and projects, I debate competitively and take
@@ -49,7 +42,7 @@ export default function About() {
           skills that carry over directly into how I work on a team.
         </p>
           <p>
-            (hobbies page coming soon) /* in progress */
+            (hobbies page coming soon)
           </p>
         </div>
       </BlurPanel>

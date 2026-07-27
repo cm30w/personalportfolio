@@ -8,6 +8,7 @@ interface Project {
   title: string;
   date: string;
   description: string;
+  highlights: string[];
   tags: string[];
   preview: string;
   url?: string;
@@ -21,7 +22,13 @@ const projects: Project[] = [
   {
     title: 'personal website',
     date: 'jul 2026',
-    description: 'This site itself. A canvas boid simulation drives a fish school across the background. A WebGL layer renders responsive water ripples. Built with React and TypeScript on Vite, animations coded from scratch.',
+    description:
+      'This site — a WebGL water surface and Canvas2D boid fish school I built from scratch in React and TypeScript.',
+    highlights: [
+      'Built WebGL ripple compositing over a live fish texture',
+      'Implemented boid flocking with cursor avoidance',
+      'Coded custom animations without external physics libraries',
+    ],
     tags: ['React', 'TypeScript', 'WebGL', 'Canvas2D'],
     preview: previewUrl('personal website.png'),
     url: 'https://github.com/cm30w/personalportfolio',
@@ -29,15 +36,26 @@ const projects: Project[] = [
   {
     title: 'nimbus',
     date: 'jul 2026',
-    description: 'A voice-controlled, self-driving drone built with a team. A Swift iOS app captures voice commands and sends flight instructions. A Python backend handles autonomous navigation. Explores voice control paired with real-time flight logic.',
+    description:
+      'Team project translating voice and visual intent into precise drone actions with on-device and cloud ML.',
+    highlights: [
+      'Contributor — voice/intent pipeline from speech to structured flight JSON',
+      'Integrated ElevenLabs STT with a fine-tuned intent LLM',
+    ],
     tags: ['Swift', 'Python', 'Robotics', 'iOS'],
     preview: previewUrl('nimbus.png'),
-    url: 'https://github.com/Raymond1134/Nimbus',
+    url: 'https://devpost.com/software/nimbus-n9x04s',
   },
   {
     title: 'dancetracker',
     date: 'jul 2026',
-    description: 'A browser dance practice app comparing your webcam movement to a reference video. Uses MediaPipe pose tracking client-side, scoring 8 joint angles each second into a 0-10 accuracy score. Supports custom MP4 uploads and sync adjustment.',
+    description:
+      'Browser dance practice app that scores webcam pose against a reference video in real time.',
+    highlights: [
+      'Ran MediaPipe pose tracking fully client-side',
+      'Scored 8 joint angles per second into a 0–10 accuracy metric',
+      'Built sync adjustment and custom MP4 upload flows',
+    ],
     tags: ['React', 'TypeScript', 'Computer Vision', 'Tailwind CSS'],
     preview: previewUrl('dance tracker.png'),
     url: 'https://github.com/cm30w/dancetracker',
@@ -45,7 +63,13 @@ const projects: Project[] = [
   {
     title: 'worktracker',
     date: 'jun 2026',
-    description: 'A cross-platform desktop app with a task list, pomodoro timer, and integrated music player with optional Spotify Connect. Built with Electron, React, and TypeScript. Fully customizable theme. Ships as a native Windows installer.',
+    description:
+      'Cross-platform Electron desktop app combining tasks, pomodoro timing, and optional Spotify Connect.',
+    highlights: [
+      'Built reusable React components with shared state across views',
+      'Integrated Spotify Connect alongside a local music player',
+      'Implemented fully customizable theming',
+    ],
     tags: ['Electron', 'React', 'TypeScript', 'Desktop'],
     preview: previewUrl('work tracker.png'),
     url: 'https://github.com/cm30w/worktracker',
@@ -53,7 +77,13 @@ const projects: Project[] = [
   {
     title: 'boid',
     date: 'jan 2026',
-    description: 'A browser boid flocking simulation. Each boid follows three local rules - separation, alignment, cohesion - producing emergent group movement. Built with vanilla JavaScript and HTML5 canvas, no external physics libraries.',
+    description:
+      'Browser flocking simulation where local separation, alignment, and cohesion produce emergent group motion.',
+    highlights: [
+      'Implemented classic boid rules from scratch on HTML5 canvas',
+      'Tuned neighbor radius and weights for stable flocking',
+      'Avoided external physics libraries',
+    ],
     tags: ['JavaScript', 'Canvas2D', 'Algorithms'],
     preview: previewUrl('boid.png'),
     url: 'https://github.com/cm30w/boid',
@@ -61,7 +91,13 @@ const projects: Project[] = [
   {
     title: 'multi-fx',
     date: 'mar 2025',
-    description: 'A real-time audio effects app applying distortion, chorus, and delay to live mic input. Python (PyAudio, FastAPI) processes audio with low latency, controlled from a React frontend. Built as a team project.',
+    description:
+      'Contributor on a team real-time audio effects stack applying distortion, chorus, and delay to live mic input.',
+    highlights: [
+      'Contributor — React frontend controlling live effect parameters',
+      'Wired UI to a low-latency Python/FastAPI audio backend',
+      'Handled real-time mic streaming with PyAudio',
+    ],
     tags: ['Python', 'React', 'FastAPI', 'Audio Processing'],
     preview: previewUrl('multifx.png'),
     url: 'https://github.com/sborishchev/multi-fx',
@@ -123,10 +159,8 @@ function ProjectCard({ project }: { project: Project }) {
   }, [isExpanded]);
 
   const onCardClick = (e: MouseEvent<HTMLDivElement>) => {
-    // Title links navigate; don't toggle expand when following them.
     if ((e.target as HTMLElement).closest('a.project-card-title')) return;
 
-    // Fine pointers use CSS :hover; only toggle for coarse/touch.
     if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
     setIsExpanded((prev) => !prev);
@@ -165,7 +199,14 @@ function ProjectCard({ project }: { project: Project }) {
             ))}
           </div>
           <p className="project-card-teaser" ref={teaserRef}>{project.description}</p>
-          <p className="project-card-desc">{project.description}</p>
+          <div className="project-card-desc">
+            <p>{project.description}</p>
+            <ul className="project-highlights">
+              {project.highlights.map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

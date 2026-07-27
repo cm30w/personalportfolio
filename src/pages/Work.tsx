@@ -16,8 +16,8 @@ const current: Role[] = [
     org: 'uw computer science club',
     period: 'april 2026 – present',
     bullets: [
-      'lead a team of 5 designers to deliver the 2026 class profile, owning design from brief to launch',
-      'established design system and workflow standards to keep the team aligned across concurrent workstreams',
+      'lead frontend design for a team of 5, shipping the 2026 class profile from brief to launch as a responsive web product',
+      'built shared component and layout standards so designers and developers stay aligned across concurrent workstreams',
     ],
   },
   {
@@ -37,7 +37,7 @@ const previous: Role[] = [
     org: 'uw computer science club',
     period: 'jan 2026 – apr 2026',
     bullets: [
-      'oversaw the events, web development, graphics, and marketing teams, driving cross-functional accountability week-over-week',
+      'oversaw events, web development, graphics, and marketing — coordinating frontend delivery and cross-team accountability week-over-week',
       "grew the club's instagram by 120,000+ cumulative views, a 7.5x increase in engagement over prior benchmarks",
     ],
   },

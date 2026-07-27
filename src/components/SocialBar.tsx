@@ -7,15 +7,6 @@ export default function SocialBar({ className = '' }: SocialBarProps) {
     <div className={`social-bar ${className}`.trim()}>
       <a
         className="social-btn"
-        href="https://github.com/cm30w"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="GitHub"
-      >
-        <GithubIcon />
-      </a>
-      <a
-        className="social-btn"
         href="https://www.linkedin.com/in/claire-wang-33067b252/"
         target="_blank"
         rel="noopener noreferrer"
@@ -25,12 +16,12 @@ export default function SocialBar({ className = '' }: SocialBarProps) {
       </a>
       <a
         className="social-btn"
-        href="https://www.pixiv.net/en/users/61091823"
+        href="https://github.com/cm30w"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Pixiv"
+        aria-label="GitHub"
       >
-        <PixivIcon />
+        <GithubIcon />
       </a>
       <a
         className="social-btn"
@@ -57,14 +48,6 @@ function LinkedinIcon() {
   return (
     <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-    </svg>
-  );
-}
-
-function PixivIcon() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M4.935 0A4.924 4.924 0 0 0 0 4.935v14.13A4.924 4.924 0 0 0 4.935 24H19.065A4.924 4.924 0 0 0 24 19.065V4.935A4.924 4.924 0 0 0 19.065 0zm7.81 4.547c2.181 0 4.058.676 5.399 1.847a6.167 6.167 0 0 1 2.116 4.87c0 2.086-.646 3.81-1.958 5.032-1.25 1.174-3.069 1.809-5.478 1.809-1.58 0-3.063-.244-4.312-.64v4.11H6.01V5.276c1.5-.49 3.555-.729 6.735-.729zm.11 1.987c-2.116 0-3.78.304-4.62.67v8.535c.933.322 2.191.512 3.67.512 3.447 0 5.366-1.652 5.366-4.935.002-2.9-1.6-4.782-4.416-4.782z" />
     </svg>
   );
 }
