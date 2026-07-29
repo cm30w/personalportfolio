@@ -38,7 +38,7 @@ const previous: Role[] = [
     period: 'jan 2026 – apr 2026',
     bullets: [
       'oversaw events, web development, graphics, and marketing — coordinating frontend delivery and cross-team accountability week-over-week',
-      "grew the club's instagram by 120,000+ cumulative views, a 7.5x increase in engagement over prior benchmarks",
+      "grew the club's instagram by 120,000+ cumulative views",
     ],
   },
   {

@@ -172,10 +172,9 @@ function ProjectCard({ project }: { project: Project }) {
       className={`project-card${isExpanded ? ' is-expanded' : ''}`}
       onClick={onCardClick}
     >
-      <div
-        className="project-card-preview"
-        style={{ backgroundImage: `url(${project.preview})` }}
-      />
+      <div className="project-card-preview">
+        <img src={project.preview} alt="" />
+      </div>
       <div className="project-card-body" ref={bodyRef}>
         <div className="project-card-header" ref={headerRef}>
           {project.url ? (
