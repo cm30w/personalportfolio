@@ -18,6 +18,7 @@ uniform sampler2D u_prev;
 uniform sampler2D u_prev2;
 uniform vec2 u_res;
 uniform float u_time;
+uniform float u_motion;
 varying vec2 v_uv;
 
 void main() {
@@ -42,9 +43,11 @@ void main() {
   float next = iso * (2.0 / 3.0) - prev2;
   next *= 0.989;
 
-  // Smooth low-frequency drive — gently excites the simulation without blurriness
+  // Smooth low-frequency drive — gently excites the simulation without blurriness.
+  // Scaled by u_motion so prefers-reduced-motion users get still water (clicks
+  // still ripple — that's direct feedback, not ambient movement).
   float bg = sin(v_uv.x * 4.71 + u_time * 0.28) * cos(v_uv.y * 3.93 - u_time * 0.22);
-  next += bg * 0.003;
+  next += bg * 0.003 * u_motion;
 
   next = clamp(next, -1.0, 1.0);
   gl_FragColor = vec4(next, next, next, 1.0);
@@ -78,6 +81,7 @@ uniform sampler2D u_fish;
 uniform sampler2D u_pattern;
 uniform vec2 u_res;
 uniform float u_time;
+uniform float u_motion;
 varying vec2 v_uv;
 
 void main() {
@@ -99,7 +103,8 @@ void main() {
   float dy = cos(v_uv.x * 1.9  - v_uv.y * 2.4  + t * 0.18) * 0.0275
            + cos(v_uv.x * 4.3  + v_uv.y * 2.1  - t * 0.35) * 0.011
            + cos(v_uv.x * 6.2  - v_uv.y * 7.3  - t * 0.55) * 0.0045;
-  vec2 waterDistort = vec2(dx, dy);
+  // u_motion stills the ambient undulation for prefers-reduced-motion
+  vec2 waterDistort = vec2(dx, dy) * u_motion;
 
   // Fade distortion to zero near edges — prevents clamped-UV stretch artefacts
   float ex = smoothstep(0.0, 0.12, v_uv.x) * smoothstep(1.0, 0.88, v_uv.x);
@@ -131,8 +136,20 @@ void main() {
   float h = texture2D(u_ripple, v_uv).r;
   float shimmer = 1.0 + h * 0.06 + length(normal) * 0.175;
   shimmer = clamp(shimmer, 0.94, 1.09);
+  scene *= shimmer;
 
-  gl_FragColor = vec4(scene * shimmer, 1.0);
+  // Underwater light shafts — slightly angled bands drifting slowly, strongest
+  // near the surface and fading with depth. Additive and faint so panel text
+  // never loses contrast; drift freezes (but shafts remain) under u_motion=0.
+  float rc = v_uv.x * 2.2 - v_uv.y * 0.55;
+  float ray = pow(max(0.0, sin(rc * 9.0  + t * 0.10 * u_motion)), 3.0) * 0.6
+            + pow(max(0.0, sin(rc * 17.0 - t * 0.07 * u_motion + 1.7)), 4.0) * 0.4;
+  scene += vec3(1.0, 0.98, 0.90) * ray * (v_uv.y * v_uv.y) * 0.055;
+
+  // Soft vignette — a few percent at the corners, keeps the eye centered
+  float vig = 1.0 - smoothstep(0.5, 0.95, distance(v_uv, vec2(0.5))) * 0.09;
+
+  gl_FragColor = vec4(scene * vig, 1.0);
 }
 `;
 
@@ -317,20 +334,6 @@ function createPatternTex(gl: WebGLRenderingContext): {
   // served under /<repo>/) — a root-absolute path would 404 there.
   fetch(`${import.meta.env.BASE_URL}project-preview-pattern.svg`)
     .then(r => {
-      // #region agent log
-      fetch('http://127.0.0.1:7691/ingest/46a1531e-b5f7-424f-853f-c4ad2f0a24ce', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'cde014' },
-        body: JSON.stringify({
-          sessionId: 'cde014',
-          location: 'WaterCanvas.tsx:pattern-fetch',
-          message: 'pattern svg fetch response',
-          data: { url: `${import.meta.env.BASE_URL}project-preview-pattern.svg`, ok: r.ok, status: r.status },
-          timestamp: Date.now(),
-          hypothesisId: 'H1',
-        }),
-      }).catch(() => {});
-      // #endregion
       if (!r.ok) throw new Error(`Pattern SVG fetch failed: ${r.status}`);
       return r.text();
     })
@@ -371,20 +374,6 @@ export default function WaterCanvas({ fishRef }: Props) {
     if (!canvas) return;
 
     const gl = canvas.getContext('webgl', { alpha: false, premultipliedAlpha: false });
-    // #region agent log
-    fetch('http://127.0.0.1:7691/ingest/46a1531e-b5f7-424f-853f-c4ad2f0a24ce', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'cde014' },
-      body: JSON.stringify({
-        sessionId: 'cde014',
-        location: 'WaterCanvas.tsx:webgl',
-        message: gl ? 'webgl context ok' : 'webgl context FAILED',
-        data: { href: window.location.href, baseUrl: import.meta.env.BASE_URL },
-        timestamp: Date.now(),
-        hypothesisId: 'H5',
-      }),
-    }).catch(() => {});
-    // #endregion
     if (!gl) return;
 
     const rippleProg = createProgram(gl, VERT_SRC, RIPPLE_FRAG_SRC);
@@ -407,8 +396,30 @@ export default function WaterCanvas({ fishRef }: Props) {
     let fboB = createFBO(gl, W, H);
     let fboC = createFBO(gl, W, H);
 
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Display canvas at device resolution (capped) so the gradient, tile grid,
+    // and shimmer stay crisp on HiDPI screens. The ripple sim and fish texture
+    // keep their existing resolutions — only the composite pass costs more, and
+    // the pixel budget bounds that on large 2x monitors.
+    const displayScale = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const budget = 4_500_000;
+      const px = window.innerWidth * window.innerHeight * dpr * dpr;
+      return px > budget ? Math.max(1, dpr * Math.sqrt(budget / px)) : dpr;
+    };
+
+    const sizeCanvas = () => {
+      const scale = displayScale();
+      canvas.width  = Math.round(window.innerWidth * scale);
+      canvas.height = Math.round(window.innerHeight * scale);
+    };
+    sizeCanvas();
+
+    // Still water for prefers-reduced-motion: no ambient drive, no undulation,
+    // no cursor-trail drops. Click splashes stay — direct feedback, not motion.
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let reducedMotion = motionQuery.matches;
+    const onMotionChange = () => { reducedMotion = motionQuery.matches; };
+    motionQuery.addEventListener('change', onMotionChange);
 
     const bgTex      = createGradientTex(gl);
     const fishTex    = createFishTex(gl);
@@ -477,6 +488,7 @@ export default function WaterCanvas({ fishRef }: Props) {
 
       gl!.uniform2f(gl!.getUniformLocation(rippleProg!, 'u_res'), W, H);
       gl!.uniform1f(gl!.getUniformLocation(rippleProg!, 'u_time'), time);
+      gl!.uniform1f(gl!.getUniformLocation(rippleProg!, 'u_motion'), reducedMotion ? 0 : 1);
       gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
 
       // Rotate FBOs: C→A (new prev), A→B (new prev2), B free
@@ -527,6 +539,7 @@ export default function WaterCanvas({ fishRef }: Props) {
 
       gl!.uniform2f(gl!.getUniformLocation(renderProg!, 'u_res'), W, H);
       gl!.uniform1f(gl!.getUniformLocation(renderProg!, 'u_time'), time);
+      gl!.uniform1f(gl!.getUniformLocation(renderProg!, 'u_motion'), reducedMotion ? 0 : 1);
       gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
 
       animId = requestAnimationFrame(render);
@@ -537,15 +550,18 @@ export default function WaterCanvas({ fishRef }: Props) {
     // Throttle mousemove drops so we don't flood the queue
     let lastMouseMs = 0;
     const handleMouse = (e: MouseEvent) => {
+      if (reducedMotion) return;
       const now = performance.now();
       if (now - lastMouseMs < 32) return; // ~30 drops/sec max
       lastMouseMs = now;
       dropQueueRef.current.push({ px: e.clientX, py: e.clientY, radius: 22, strength: 0.175 });
     };
 
-    // Click / tap: big satisfying splash
+    // Click / tap: big satisfying splash + startle nearby fish (they dart away
+    // and let out a puff of bubbles — makes "try to catch the fish!" feel real)
     const handleClick = (e: MouseEvent) => {
       dropQueueRef.current.push({ px: e.clientX, py: e.clientY, radius: 55, strength: 0.45 });
+      fishRef.current?.splash(e.clientX, e.clientY);
     };
 
     const handleTouch = (e: TouchEvent) => {
@@ -564,8 +580,7 @@ export default function WaterCanvas({ fishRef }: Props) {
     let patternResizeTimer: number | undefined;
 
     const handleResize = () => {
-      canvas!.width  = window.innerWidth;
-      canvas!.height = window.innerHeight;
+      sizeCanvas();
       W = Math.floor(window.innerWidth / 2);
       H = Math.floor(window.innerHeight / 2);
       fboA = createFBO(gl!, W, H);
@@ -585,6 +600,7 @@ export default function WaterCanvas({ fishRef }: Props) {
     return () => {
       cancelAnimationFrame(animId);
       window.clearTimeout(patternResizeTimer);
+      motionQuery.removeEventListener('change', onMotionChange);
       window.removeEventListener('mousemove',  handleMouse);
       window.removeEventListener('click',      handleClick);
       window.removeEventListener('touchmove',  handleTouch);

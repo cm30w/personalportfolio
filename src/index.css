@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Sofia+Sans+Semi+Condensed:wght@400;700&display=swap');
+/* Fonts are loaded from index.html via <link preconnect> — starts the download
+   earlier than a CSS @import, so styled text paints sooner. */
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -24,6 +25,30 @@ html, body {
 body {
   font-family: 'Inter', sans-serif;
   color: #fff;
+  /* Same stops as the WebGL water — no white flash while the canvas boots,
+     and the site keeps its look if WebGL is unavailable. */
+  background: linear-gradient(
+    180deg,
+    #98daf9 0%,
+    #78b8f8 18.75%,
+    #7094f6 42.788%,
+    #3e46a0 100%
+  );
+  background-attachment: fixed;
+}
+
+/* Text selection in the site's star-yellow */
+::selection {
+  background: rgba(255, 248, 195, 0.9);
+  color: #3e46a0;
+}
+
+/* Keyboard focus — a solid ring in the element's own color; translucent rings
+   disappear against the moving water. */
+:where(a, button):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 /* Gradient background */
@@ -138,13 +163,25 @@ body {
   text-shadow: 0 0 4px rgba(255, 255, 255, 0.75), 0 0 12px rgba(255, 255, 255, 0.4);
 }
 
+/* Active link: a slowly flowing wavy underline instead of a flat rule —
+   the nav's little nod to the water it floats on */
 .nav a.active {
   opacity: 1;
   font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 6px;
-  text-decoration-thickness: 2px;
   text-shadow: 0 0 2.7px rgba(255, 255, 255, 0.55);
+}
+
+.nav a.active .nav-label-desktop {
+  padding-bottom: 9px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='7' viewBox='0 0 28 7'%3E%3Cpath d='M0 3.5 Q7 0.5 14 3.5 T28 3.5' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-opacity='0.9'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+  background-size: 28px 7px;
+  animation: navWaveFlow 1.8s linear infinite;
+}
+
+@keyframes navWaveFlow {
+  to { background-position-x: 28px; }
 }
 
 .home-tagline {
@@ -334,12 +371,14 @@ body {
   text-decoration: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.35);
   padding-bottom: 1px;
-  transition: border-color 0.15s;
+  transition: border-color 0.2s ease, color 0.2s ease;
   display: inline-block;
 }
 
+/* Warm on hover — same accent the about page links use */
 .contact-link:hover {
-  border-color: rgba(255, 255, 255, 0.75);
+  color: #ffe3ab;
+  border-color: rgba(255, 227, 171, 0.8);
 }
 
 /* Tight blur — body copy only, matches Figma background blur layers */
@@ -404,13 +443,26 @@ body {
   text-decoration: none;
   border: none;
   cursor: pointer;
-  transition: background 0.18s, transform 0.18s;
+  box-shadow: 0 4px 14px rgba(62, 70, 160, 0.18);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s cubic-bezier(0.33, 1, 0.68, 1),
+    box-shadow 0.2s ease;
   flex-shrink: 0;
 }
 
 .social-btn:hover {
   background: #fff;
-  transform: translateY(-2px);
+  color: #3e46a0;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 26px rgba(62, 70, 160, 0.3);
+}
+
+/* Pressed: quick dip so the tap feels physical */
+.social-btn:active {
+  transform: translateY(-1px) scale(0.96);
+  transition-duration: 0.08s;
 }
 
 .social-bar--footer {
@@ -458,6 +510,8 @@ body {
   color: #fff;
   line-height: 1;
   letter-spacing: -0.02em;
+  /* Soft deep-blue bloom lifts the big white type off the light surface water */
+  text-shadow: 0 2px 30px rgba(62, 70, 160, 0.4);
 }
 
 .heading-section {
@@ -466,6 +520,7 @@ body {
   font-weight: 700;
   color: #fff;
   line-height: 1.1;
+  text-shadow: 0 2px 30px rgba(62, 70, 160, 0.4);
 }
 
 .subheading {
@@ -508,6 +563,14 @@ body {
   border-radius: 28px;
   overflow: hidden;
   cursor: pointer;
+  box-shadow: 0 6px 22px rgba(62, 70, 160, 0.16);
+  transition: box-shadow 0.35s ease;
+}
+
+.project-card:hover,
+.project-card:focus-within,
+.project-card.is-expanded {
+  box-shadow: 0 16px 44px rgba(62, 70, 160, 0.32);
 }
 
 /* Preview sits in the visible area above the collapsed text panel */
@@ -530,6 +593,14 @@ body {
   object-fit: cover;
   object-position: top center;
   display: block;
+  /* Slow drift-zoom while the panel slides up — a touch of depth */
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-card:hover .project-card-preview img,
+.project-card:focus-within .project-card-preview img,
+.project-card.is-expanded .project-card-preview img {
+  transform: scale(1.06);
 }
 
 /* Card body — full-height panel that slides up via transform */
@@ -591,6 +662,31 @@ body {
 
 a.project-card-title:hover {
   text-decoration: underline;
+}
+
+/* External-link affordance on linked titles — nudges up-right on hover */
+a.project-card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28em;
+}
+
+a.project-card-title::after {
+  content: '';
+  width: 0.48em;
+  height: 0.48em;
+  flex-shrink: 0;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 17 17 7M9 7h8v8' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 17 17 7M9 7h8v8' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: 0.55;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+a.project-card-title:hover::after,
+a.project-card-title:focus-visible::after {
+  opacity: 1;
+  transform: translate(2px, -2px);
 }
 
 /* Grows on expand so the description can fill the card below the title */
@@ -673,8 +769,10 @@ a.project-card-title:hover {
   white-space: nowrap;
 }
 
-/* Expanded: panel slides to top; description fades in over the tag slot */
-.project-card.is-expanded .project-card-body {
+/* Expanded: panel slides to top; description fades in over the tag slot.
+   :focus-within gives keyboard users the same reveal as hover. */
+.project-card.is-expanded .project-card-body,
+.project-card:focus-within .project-card-body {
   transform: translateY(0);
   border-radius: 28px;
   padding-top: 22px;
@@ -682,13 +780,17 @@ a.project-card-title:hover {
 
 .project-card.is-expanded .project-card-date,
 .project-card.is-expanded .tag-row,
-.project-card.is-expanded .project-card-teaser {
+.project-card.is-expanded .project-card-teaser,
+.project-card:focus-within .project-card-date,
+.project-card:focus-within .tag-row,
+.project-card:focus-within .project-card-teaser {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.22s ease;
 }
 
-.project-card.is-expanded .project-card-desc {
+.project-card.is-expanded .project-card-desc,
+.project-card:focus-within .project-card-desc {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
@@ -818,6 +920,7 @@ a.project-card-title:hover {
 
   .nav--open .nav-links {
     display: flex;
+    animation: navDropIn 0.22s cubic-bezier(0.33, 1, 0.68, 1);
   }
 
   .nav-label-desktop {
@@ -914,5 +1017,50 @@ a.project-card-title:hover {
 
   .page--projects.page--scroll {
     padding-right: 24px;
+  }
+}
+
+@keyframes navDropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Reduced motion: stop the decorative movement (flowing underline, dropdown
+   slide, hover lifts, drift-zoom). Opacity-only entrance fades stay — they
+   aren't vestibular triggers. Canvas layers calm themselves in JS. */
+@media (prefers-reduced-motion: reduce) {
+  .nav a.active .nav-label-desktop,
+  .nav--open .nav-links {
+    animation: none;
+  }
+
+  .social-btn,
+  .social-btn:hover,
+  .social-btn:active {
+    transform: none;
+  }
+
+  .project-card-preview img {
+    transition: none;
+  }
+
+  .project-card:hover .project-card-preview img,
+  .project-card:focus-within .project-card-preview img,
+  .project-card.is-expanded .project-card-preview img {
+    transform: none;
+  }
+
+  a.project-card-title:hover::after,
+  a.project-card-title:focus-visible::after {
+    transform: none;
+  }
+}
+
+/* Reduced transparency: back the frosted panels with a solid-enough tint so
+   text never sits on raw moving water. */
+@media (prefers-reduced-transparency: reduce) {
+  .blur-panel::before,
+  .body-blur::before {
+    background: rgba(62, 70, 160, 0.75);
   }
 }

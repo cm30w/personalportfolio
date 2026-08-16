@@ -7,3 +7,9 @@
   0%, 100% { opacity: 0.6; transform: scale(1) rotate(-5deg); }
   50% { opacity: 1; transform: scale(1.12) rotate(5deg); }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .star-decal {
+    animation: none;
+  }
+}
