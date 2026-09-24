@@ -17,7 +17,6 @@ export default function About() {
 
       <BlurPanel>
         <div className="body-text about-text">
-        <div className="body-text about-text">
           <p>
             Hi, I'm Claire, a computer science student at the University of
             Waterloo. I like designing and building systems end-to-end, starting
@@ -39,7 +38,6 @@ export default function About() {
             communication, adaptability, and ability to perform under pressure,
             skills that carry over directly into how I work on a team.
           </p>
-        </div>
           <p>
             (hobbies page coming soon)
           </p>

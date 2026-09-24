@@ -16,11 +16,30 @@ const PERCEPTION = 80;
 const SEP_DIST = 28;
 const AVOID_RADIUS = 180;
 const AVOID_STRENGTH = 0.07;
+const STARTLE_RADIUS = 240;
+const STARTLE_IMPULSE = 2.4;
 
 // Pre-computed squared thresholds to avoid sqrt in hot loops
 const PERCEPTION_SQ = PERCEPTION * PERCEPTION;
 const SEP_DIST_SQ = SEP_DIST * SEP_DIST;
 const AVOID_RADIUS_SQ = AVOID_RADIUS * AVOID_RADIUS;
+const STARTLE_RADIUS_SQ = STARTLE_RADIUS * STARTLE_RADIUS;
+
+// One-off impulse pushing boids near (x, y) directly away — the speed clamp in
+// stepBoids bleeds it back off over the following frames, so fish visibly dart
+// from a click/tap then settle back to cruising.
+function startleBoids(boids: Boid[], x: number, y: number) {
+  for (const b of boids) {
+    const dx = b.x - x;
+    const dy = b.y - y;
+    const distSq = dx * dx + dy * dy;
+    if (distSq >= STARTLE_RADIUS_SQ || distSq === 0) continue;
+    const dist = Math.sqrt(distSq);
+    const kick = STARTLE_IMPULSE * (1 - dist / STARTLE_RADIUS);
+    b.vx += (dx / dist) * kick;
+    b.vy += (dy / dist) * kick;
+  }
+}
 
 function initBoids(count: number, w: number, h: number, sizeMin = 1, sizeMax = 1): Boid[] {
   return Array.from({ length: count }, () => {
@@ -161,6 +180,11 @@ export function useBoids(count = 30, smallCount = 4) {
     mouseRef.current = { x, y };
   }, []);
 
+  const startle = useCallback((x: number, y: number) => {
+    startleBoids(boidsRef.current, x, y);
+    startleBoids(smallBoidsRef.current, x, y);
+  }, []);
+
   const resize = useCallback((w: number, h: number) => {
     sizeRef.current = { w, h };
   }, []);
@@ -171,6 +195,7 @@ export function useBoids(count = 30, smallCount = 4) {
     init,
     step,
     setMouse,
+    startle,
     resize,
   };
 }

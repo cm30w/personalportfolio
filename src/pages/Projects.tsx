@@ -173,7 +173,7 @@ function ProjectCard({ project }: { project: Project }) {
       onClick={onCardClick}
     >
       <div className="project-card-preview">
-        <img src={project.preview} alt="" />
+        <img src={project.preview} alt="" loading="lazy" decoding="async" />
       </div>
       <div className="project-card-body" ref={bodyRef}>
         <div className="project-card-header" ref={headerRef}>
